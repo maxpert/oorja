@@ -4,6 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	
+	<link rel="stylesheet" type="text/css" href="shCore.css" />
+	<link rel="stylesheet" type="text/css" href="shThemeFadeToGrey.css" />
 
 	<title>maxpert/oorja @ GitHub</title>
 	
@@ -52,7 +55,73 @@
       Another Library for Object Oriented Javascript
     </div>
 
-    <p>Library provides basic Class structure for Javascript</p><h2>Authors</h2>
+    <p>
+    Library provides basic Class structure for Javascript
+    How:
+    <script type="syntaxhighlighter" class="brush: js"><![CDATA[    
+    //Animal base class
+    var animal = Class({
+		Init: function(){
+			console.log('animal');
+		},
+		
+		Public: {
+			eat: function(){
+				console.log(this.name+' eats');
+				this.name = 'animal';
+			},
+			
+			name: 'animal',
+			
+			walk: function(){
+				this.pwalk();
+			}
+		},
+		
+		Private: {
+			pwalk: function(){
+				console.log(this.name+' walks');
+			}
+		}
+	});
+
+	//Dog derived class from animal overriding eat
+	var dog = Class(animal, {
+		Init: function(){
+			console.log('dog');
+		},
+		
+		Public: {
+			eat: function(){
+				console.log(this.name + ' eats');
+				this.walk();
+			},
+			
+			name: 'dog'
+		}
+	});
+
+	//Hound inherited from dog provides a new method howl
+	var hound = Class(dog, {
+		Init: function(){
+			console.log('hound'); // log constructor
+		},
+		
+		Public: {
+			howl: function(){
+				console.log(this.name+" howls"); // log name
+				this.eat();
+			}
+		}
+	});
+
+
+	var dh = new hound(); // logs animal, dog, hound
+	dh.howl(); // Logs dog howls, dog eats, animal walks
+	]]></script>
+    </p>
+    
+    <h2>Authors</h2>
 <p>Zohaib Sibt-e-Hassan<br/><br/>      </p>
 <h2>Contact</h2>
 <p>Zohaib Sibt-e-Hassan<br/>      </p>
@@ -75,6 +144,12 @@
 
   </div>
 
-  
+
+	<script type="text/javascript" src="shCore.js"></script>
+	<script type="text/javascript" src="shBrushJScript.js"></script>
+	
+	<script type="text/javascript">
+		 SyntaxHighlighter.all()
+	</script> 
 </body>
 </html>
