@@ -35,9 +35,7 @@ var Class = function(){
     var merge = function(a, b){
 		var i;
         if(b.length !== undefined && a.length !== undefined){
-            for(i=0;i<b.length;i++){
-                a[a.length]=b[i];
-            }
+		a.concat(b);
         }else if(typeof a == 'object' && typeof b == 'object'){
             for(i in b){
                 if(b.hasOwnProperty(i)){
@@ -117,10 +115,11 @@ var Class = function(){
 				func.apply(vis, arguments);
 				
 				//Accept canges in VTable
+				//Update values if they were changed in private other wise dump them to publics
 				for(var p in vis){
-					if(publics.hasOwnProperty(p) && vis.hasOwnProperty(p) && publics[p] !== vis[p]){
-						this[p] = vis[p];
-					}else if(privates.hasOwnProperty(p) && vis.hasOwnProperty(p) && privates[p] !== vis[p]){
+					if(privates.hasOwnProperty(p) && vis.hasOwnProperty(p) && privates[p] !== vis[p]){
+						privates[p] = vis[p];
+					}else if(vis.hasOwnProperty(p) && this[p] !== vis[p]){
 						privates[p] = vis[p];
 					}
 				}
