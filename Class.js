@@ -106,13 +106,13 @@ var Class = function(){
 		}
 		
 		//Create a VTable including publics and privates
-		var vis = {};
+		var vis = {}, me = this;
 		var updateObj = function(){
 			for(var p in vis){
 				if(privates.hasOwnProperty(p) && vis.hasOwnProperty(p) && privates[p] !== vis[p]){
 					privates[p] = vis[p];
-				}else if(vis.hasOwnProperty(p) && this[p] !== vis[p]){
-					privates[p] = vis[p];
+				}else if(vis.hasOwnProperty(p) && me[p] !== vis[p]){
+					me[p] = vis[p];
 				}
 			}
 		};
