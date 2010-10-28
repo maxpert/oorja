@@ -107,22 +107,23 @@ var Class = function(){
 		
 		//Create a VTable including publics and privates
 		var vis = {};
+		var updateObj = function(){
+			for(var p in vis){
+				if(privates.hasOwnProperty(p) && vis.hasOwnProperty(p) && privates[p] !== vis[p]){
+					privates[p] = vis[p];
+				}else if(vis.hasOwnProperty(p) && this[p] !== vis[p]){
+					privates[p] = vis[p];
+				}
+			}
+		};
 		
 		//Create VTable call for function
 		var vtablize = function(func){
 			return function(){
 				//Call vtabled
 				func.apply(vis, arguments);
-				
 				//Accept canges in VTable
-				//Update values if they were changed in private other wise dump them to publics
-				for(var p in vis){
-					if(privates.hasOwnProperty(p) && vis.hasOwnProperty(p) && privates[p] !== vis[p]){
-						privates[p] = vis[p];
-					}else if(vis.hasOwnProperty(p) && this[p] !== vis[p]){
-						privates[p] = vis[p];
-					}
-				}
+				updateObj();
 			};
 		};
 		
@@ -138,7 +139,9 @@ var Class = function(){
 		merge(vis, privates);
 		merge(vis, this);
 		
-		init.apply(this, arguments);
+		init.apply(vis, arguments);
+		updateObj();
+		
 	};
     
     return klass;
