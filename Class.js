@@ -22,6 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+* Class function can be used two ways
+*  1. Class(parent, object)
+*  2. Class(object);
+* Here object must have 
+* Init (constructor function), 
+* Public (public functions/properties), 
+* and Private (private functions/properties accessible via public memebers of current class only).
+*
+* It should be noticed that only publics are inherited and they are bound to parent's scope (like in C++).
+* So a eat method inherited in 'Mammal' class from 'Animal' class if not overridden will be bound to parent's scope 
+* (i.e. this.whatEver property will result in accessing whatEver declared under Animal class)
+*
+*/
+
 var Class = function(){
     var slice = Array.prototype.slice,
         args = slice.call(arguments),
@@ -32,31 +47,9 @@ var Class = function(){
         publics = null;
         
     
-    var merge = function(a, b){
-		var i;
-        if(b.length !== undefined && a.length !== undefined){
-		a.concat(b);
-        }else if(typeof a == 'object' && typeof b == 'object'){
-            for(i in b){
-                if(b.hasOwnProperty(i)){
-                    a[i]=b[i];
-                }
-            }
-        }
-    };
+    var merge = Class.mix;
     
-    var glue = function(){
-        var oa = slice.call(arguments),
-            func = oa.shift(),
-            obj = oa.shift();
-        return function(){
-            var ia = slice.call(arguments),
-                ar = [];
-            merge(ar, oa);
-            merge(ar, ia);
-            func.apply(obj, ar);
-        };
-    };
+    var glue = Class.glue;
 	
 	var bound = function(b, ob){
         var reta = {}; 
@@ -103,6 +96,7 @@ var Class = function(){
 			//Inhert parent
 			merge(this, klass.prototype.$uper);
 			merge(this, bound(parent.prototype, klass.prototype.$uper));
+			this.$uper = klass.prototype.$uper;
 		}
 		
 		//Create a VTable including publics and privates
@@ -138,6 +132,7 @@ var Class = function(){
 			}
 		}
 		
+		//Make publics and privates part of vis
 		merge(vis, privates);
 		merge(vis, me);
 		
@@ -147,4 +142,38 @@ var Class = function(){
 	};
     
     return klass;
+};
+
+/**
+* Same as $.extend of jQuery but stripped version with array concatination support
+*/
+Class.mix = function(a, b){
+	var i;
+	if(b.length !== undefined && a.length !== undefined){
+		a.concat(b);
+	}else if(typeof a == 'object' && typeof b == 'object'){
+		for(i in b){
+			if(b.hasOwnProperty(i)){
+				a[i]=b[i];
+			}
+		}
+	}
+};
+
+/**
+* Glue the scope of given function to given object with given arguments
+* same as Function.prototype.bind in famous frameworks but not poluting namespace ;)
+*/
+
+Class.glue = function(){
+	var oa = slice.call(arguments),
+		func = oa.shift(),
+		obj = oa.shift();
+	return function(){
+		var ia = slice.call(arguments),
+			ar = [];
+		Class.mix(ar, oa);
+		Class.mix(ar, ia);
+		func.apply(obj, ar);
+	};
 };
